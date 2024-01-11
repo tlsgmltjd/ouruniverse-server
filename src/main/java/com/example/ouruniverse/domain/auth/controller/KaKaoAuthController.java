@@ -20,13 +20,6 @@ public class KaKaoAuthController {
 
     private final KaKaoAuthService kaKaoAuthService;
 
-
-    @Value("${kakao.auth-url}")
-    private String kakaoAuthUrl;
-
-    @Value("${kakao.user-api-url}")
-    private String kakaoUserApiUrl;
-
     @Value("${kakao.restapi-key}")
     private String restapiKey;
 
