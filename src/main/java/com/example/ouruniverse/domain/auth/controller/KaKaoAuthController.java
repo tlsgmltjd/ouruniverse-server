@@ -34,9 +34,10 @@ public class KaKaoAuthController {
     private String redirectUri;
 
     @GetMapping("/callback")
-    public KaKaoAccount getKakaoAccount(@RequestParam("code") String code) {
+    public ResponseEntity<KaKaoAccount> getKakaoAccount(@RequestParam("code") String code) {
       log.debug("code = {}", code);
-      return kaKaoAuthService.getInfo(code).getKakaoAccount();
+      KaKaoAccount kaKaoAccount = kaKaoAuthService.getInfo(code).getKakaoAccount();
+      return ResponseEntity.ok(kaKaoAccount);
     }
 
     @GetMapping("/login")

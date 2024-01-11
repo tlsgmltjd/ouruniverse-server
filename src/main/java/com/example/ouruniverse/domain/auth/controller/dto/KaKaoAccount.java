@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KaKaoAccount {
     private Profile profile;
+    private String email;
 }
