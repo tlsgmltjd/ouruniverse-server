@@ -18,7 +18,7 @@ public class KaKaoAuthController {
     @GetMapping("/callback")
     public KaKaoAccount getKakaoAccount(@RequestParam("code") String code) {
       log.debug("code = {}", code);
-      return kaKaoAuthService.getInfo(code).getKaKaoAccount();
+      return kaKaoAuthService.getInfo(code).getKakaoAccount();
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.ouruniverse.global.feign.client;
 
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoInfo;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoToken;
+import com.example.ouruniverse.global.feign.config.KaKaoFeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URI;
 
-@FeignClient(name = "kakaoClient", configuration = KaKaoClient.class)
+@FeignClient(name = "KaKaoClient", configuration = KaKaoFeignConfig.class)
 public interface KaKaoClient {
 
     @PostMapping
