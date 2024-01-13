@@ -1,6 +1,5 @@
 package com.example.ouruniverse.domain.auth.service;
 
-import com.example.ouruniverse.domain.auth.controller.dto.KaKaoAccount;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoInfo;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoToken;
 import com.example.ouruniverse.domain.user.entity.UserEntity;
@@ -12,7 +11,6 @@ import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +65,6 @@ public class KaKaoAuthService {
 
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken,  accessToken, JwtProvider.TOKEN_TIME, true);
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.refreshToken, refreshToken, JwtProvider.REFRESH_TOKEN_TIME, true);
-
         } catch (Exception e) {
             log.error("something error..", e);
         }
