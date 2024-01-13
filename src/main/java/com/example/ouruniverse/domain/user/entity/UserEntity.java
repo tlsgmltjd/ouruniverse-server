@@ -16,15 +16,20 @@ import java.util.List;
 @Builder
 public class UserEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "email")
     private String email;
 
     @ElementCollection
+    @Column(name = "follows")
     private List<Long> follows = new ArrayList<>();
 
     @ElementCollection
+    @Column(name = "follwings")
     private List<Long> followings = new ArrayList<>();
 }
