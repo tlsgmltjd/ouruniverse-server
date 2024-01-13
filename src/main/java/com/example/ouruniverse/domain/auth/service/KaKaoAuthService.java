@@ -46,7 +46,7 @@ public class KaKaoAuthService {
 
             String accessToken = JwtProvider.createToken(kaKaoInfo.getKakaoAccount().getEmail());
             String refreshToken = JwtProvider.createRefreshToken(kaKaoInfo.getKakaoAccount().getEmail());
-            cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken, accessToken, JwtProvider.TOKEN_TIME, true);
+            cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken,  accessToken, JwtProvider.TOKEN_TIME, true);
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.refreshToken, refreshToken, JwtProvider.REFRESH_TOKEN_TIME, true);
 
         } catch (Exception e) {
