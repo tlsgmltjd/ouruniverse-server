@@ -18,22 +18,23 @@ public class KaKaoAuthService {
 
     private final KaKaoClient client;
 
-    @Value("${kakao.auth-url}")
+    @Value("${kakao.authUrl}")
     private String kakaoAuthUrl;
 
-    @Value("${kakao.user-api-url}")
+    @Value("${kakao.userApiUrl}")
     private String kakaoUserApiUrl;
 
-    @Value("${kakao.restapi-key}")
+    @Value("${kakao.restapiKey}")
     private String restapiKey;
 
-    @Value("${kakao.redirect-url}")
+    @Value("${kakao.redirectUrl}")
     private String redirectUrl;
 
     public KaKaoInfo getInfo(final String code) {
         final KaKaoToken token = getToken(code);
         log.debug("token = {}", token);
         try {
+            System.out.println(kakaoUserApiUrl);
             return client.getInfo(new URI(kakaoUserApiUrl), token.getTokenType() + " " + token.getAccessToken());
         } catch (Exception e) {
             log.error("something error..", e);

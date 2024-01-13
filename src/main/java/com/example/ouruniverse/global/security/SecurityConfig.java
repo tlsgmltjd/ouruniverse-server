@@ -1,6 +1,8 @@
 package com.example.ouruniverse.global.security;
 
 
+import com.example.ouruniverse.global.security.handler.CustomAccessDeniedHandler;
+import com.example.ouruniverse.global.security.handler.CustomAuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +30,13 @@ public class SecurityConfig {
                         .requestMatchers("/userinfo").authenticated()
                         .anyRequest().permitAll()
         );
+
+
+        http.exceptionHandling(exception ->
+                exception.authenticationEntryPoint(new CustomAuthenticationEntryPointHandler()));
+
+        http.exceptionHandling(exception ->
+                exception.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
