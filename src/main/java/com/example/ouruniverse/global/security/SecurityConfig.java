@@ -1,6 +1,7 @@
 package com.example.ouruniverse.global.security;
 
 
+import com.example.ouruniverse.global.security.filter.JwtRequestFilter;
 import com.example.ouruniverse.global.security.handler.CustomAccessDeniedHandler;
 import com.example.ouruniverse.global.security.handler.CustomAuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
@@ -19,6 +21,8 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -40,6 +44,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
         );
 
+        http
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(exception ->
                 exception.authenticationEntryPoint(new CustomAuthenticationEntryPointHandler()));

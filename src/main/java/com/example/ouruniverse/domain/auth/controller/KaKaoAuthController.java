@@ -2,6 +2,7 @@ package com.example.ouruniverse.domain.auth.controller;
 
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoAccount;
 import com.example.ouruniverse.domain.auth.service.KaKaoAuthService;
+import com.example.ouruniverse.global.common.UserManager;
 import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ public class KaKaoAuthController {
     @Value("${kakao.redirectUrl}")
     private String redirectUri;
 
+    private final UserManager userManager;
+
     @GetMapping("/callback")
     public ResponseEntity<Void> getKakaoAccount(@RequestParam("code") String code) {
       kaKaoAuthService.getInfo(code);
@@ -44,5 +47,11 @@ public class KaKaoAuthController {
                 .status(302)
                 .location(UriComponentsBuilder.fromHttpUrl(redirectUrl).build().toUri())
                 .build();
+    }
+
+    @GetMapping("/userinfo")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok(userManager.getCurrentUser().getEmail() + " : " +
+                userManager.getCurrentUser().getName());
     }
 }

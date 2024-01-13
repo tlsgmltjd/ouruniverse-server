@@ -1,11 +1,15 @@
 package com.example.ouruniverse.global.security.jwt;
 
+import com.example.ouruniverse.global.security.auth.AuthDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +19,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -26,6 +31,7 @@ public class JwtProvider {
     private String secretKey;
     private static Key key;
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final AuthDetailsService authDetailsService;
 
     @PostConstruct
     public void init() {
@@ -61,6 +67,10 @@ public class JwtProvider {
             return bearerToken.substring(7);
         }
         return null;
+    }
+    public UsernamePasswordAuthenticationToken authentication(String token){
+        UserDetails userDetails = authDetailsService.loadUserByUsername(getUserInfoFromToken(token).getSubject());
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     public boolean validateToken(String token) {
