@@ -1,4 +1,4 @@
-package com.example.ouruniverse.global.security.jwt.entity;
+package com.example.ouruniverse.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
