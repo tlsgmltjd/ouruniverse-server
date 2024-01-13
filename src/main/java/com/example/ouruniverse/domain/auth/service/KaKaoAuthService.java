@@ -1,8 +1,13 @@
 package com.example.ouruniverse.domain.auth.service;
 
+import com.example.ouruniverse.domain.auth.controller.dto.KaKaoAccount;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoInfo;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoToken;
+import com.example.ouruniverse.global.common.ConstantsUtil;
+import com.example.ouruniverse.global.common.CookieManager;
 import com.example.ouruniverse.global.feign.client.KaKaoClient;
+import com.example.ouruniverse.global.security.jwt.JwtProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,8 @@ import java.net.URI;
 public class KaKaoAuthService {
 
     private final KaKaoClient client;
+    private final CookieManager cookieManager;
+    private final HttpServletResponse httpServletResponse;
 
     @Value("${kakao.authUrl}")
     private String kakaoAuthUrl;
@@ -30,15 +37,20 @@ public class KaKaoAuthService {
     @Value("${kakao.redirectUrl}")
     private String redirectUrl;
 
-    public KaKaoInfo getInfo(final String code) {
+    public void getInfo(final String code) {
         final KaKaoToken token = getToken(code);
         log.debug("token = {}", token);
         try {
             System.out.println(kakaoUserApiUrl);
-            return client.getInfo(new URI(kakaoUserApiUrl), token.getTokenType() + " " + token.getAccessToken());
+            KaKaoInfo kaKaoInfo = client.getInfo(new URI(kakaoUserApiUrl), token.getTokenType() + " " + token.getAccessToken());
+
+            String accessToken = JwtProvider.createToken(kaKaoInfo.getKakaoAccount().getEmail());
+            String refreshToken = JwtProvider.createRefreshToken(kaKaoInfo.getKakaoAccount().getEmail());
+            cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken, accessToken, JwtProvider.TOKEN_TIME, true);
+            cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.refreshToken, refreshToken, JwtProvider.REFRESH_TOKEN_TIME, true);
+
         } catch (Exception e) {
             log.error("something error..", e);
-            return KaKaoInfo.fail();
         }
     }
 

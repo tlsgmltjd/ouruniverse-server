@@ -18,10 +18,9 @@ import java.util.Date;
 public class JwtProvider {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_TIME = 60 * 60 * 1000L;
-    private static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
+    public static final long TOKEN_TIME = 60 * 60 * 1000L;
+    public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -37,7 +36,6 @@ public class JwtProvider {
     public static String createToken(String email) {
         Date date = new Date();
 
-        // 암호화
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME))

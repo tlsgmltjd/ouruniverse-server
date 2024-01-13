@@ -27,14 +27,8 @@ public class KaKaoAuthController {
     private String redirectUri;
 
     @GetMapping("/callback")
-    public ResponseEntity<Void> getKakaoAccount(@RequestParam("code") String code, HttpServletResponse response) {
-      KaKaoAccount kaKaoAccount = kaKaoAuthService.getInfo(code).getKakaoAccount();
-
-      String accessToken = JwtProvider.createToken(kaKaoAccount.getEmail());
-      String refreshToken = JwtProvider.createRefreshToken(kaKaoAccount.getEmail());
-
-      response.addHeader(JwtProvider.AUTHORIZATION_HEADER, JwtProvider.BEARER_PREFIX + accessToken);
-      response.addHeader("Refresh-Token", JwtProvider.BEARER_PREFIX + refreshToken);
+    public ResponseEntity<Void> getKakaoAccount(@RequestParam("code") String code) {
+      kaKaoAuthService.getInfo(code);
 
       return ResponseEntity.ok().build();
     }
