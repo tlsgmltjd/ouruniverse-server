@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,40 +62,25 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
     public UsernamePasswordAuthenticationToken authentication(String token){
         UserDetails userDetails = authDetailsService.loadUserByUsername(getUserInfoFromToken(token).getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
-        } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
-        } catch (Exception e) {
-            log.error("=========== 토큰 검증 중 예외가 발생 했습니다. ===========");
-        }
-        return false;
-    }
-
     public Claims getUserInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        try {
+            if (token == null || token.isEmpty())
+                throw new JwtException("Invalid Token");
+
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("Token has expired");
+        } catch (JwtException e) {
+            throw new JwtException("Invalid Token");
+        }
     }
 }

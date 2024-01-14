@@ -1,17 +1,13 @@
 package com.example.ouruniverse.domain.auth.controller;
 
-import com.example.ouruniverse.domain.auth.controller.dto.KaKaoAccount;
+import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
 import com.example.ouruniverse.domain.auth.controller.dto.KakaoLoginPageReponse;
 import com.example.ouruniverse.domain.auth.service.KaKaoAuthService;
-import com.example.ouruniverse.global.common.UserManager;
-import com.example.ouruniverse.global.security.jwt.JwtProvider;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,9 +24,8 @@ public class KaKaoAuthController {
     private String redirectUri;
 
     @GetMapping("/callback")
-    public ResponseEntity<Void> getKakaoAccount(@RequestParam("code") String code) {
-      kaKaoAuthService.getInfo(code);
-      return ResponseEntity.ok().build();
+    public ResponseEntity<IsSignupResponse> getKakaoAccount(@RequestParam("code") String code) {
+      return ResponseEntity.ok(new IsSignupResponse(kaKaoAuthService.getInfo(code)));
     }
 
     @GetMapping("/login")

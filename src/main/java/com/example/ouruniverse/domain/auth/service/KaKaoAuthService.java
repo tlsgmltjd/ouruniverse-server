@@ -1,5 +1,6 @@
 package com.example.ouruniverse.domain.auth.service;
 
+import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoInfo;
 import com.example.ouruniverse.domain.auth.controller.dto.KaKaoToken;
 import com.example.ouruniverse.domain.user.entity.UserEntity;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -40,10 +42,11 @@ public class KaKaoAuthService {
     @Value("${kakao.redirectUrl}")
     private String redirectUrl;
 
-    public void getInfo(final String code) {
+    public boolean getInfo(final String code) {
+        boolean isSignup;
+
         final KaKaoToken token = getToken(code);
         try {
-            System.out.println(kakaoUserApiUrl);
             KaKaoInfo kaKaoInfo = client.getInfo(new URI(kakaoUserApiUrl), token.getTokenType() + " " + token.getAccessToken());
 
             String accessToken = JwtProvider.createToken(kaKaoInfo.getKakaoAccount().getEmail());
@@ -58,6 +61,13 @@ public class KaKaoAuthService {
                         .build();
 
                 userRepository.save(user);
+
+                isSignup = false;
+            } else {
+                UserEntity user = userRepository.findByEmail(kaKaoInfo.getKakaoAccount().getEmail())
+                        .orElseThrow(RuntimeException::new);
+
+                isSignup = user.getGrade() != null && user.getSchoolId() != null;
             }
 
             refreshTokenService.saveRefreshToken(refreshToken, userRepository.findByEmail(kaKaoInfo.getKakaoAccount().getEmail())
@@ -65,8 +75,11 @@ public class KaKaoAuthService {
 
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken,  accessToken, JwtProvider.TOKEN_TIME, true);
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.refreshToken, refreshToken, JwtProvider.REFRESH_TOKEN_TIME, true);
+
+            return isSignup;
         } catch (Exception e) {
             log.error("something error..", e);
+            throw new RuntimeException();
         }
     }
 

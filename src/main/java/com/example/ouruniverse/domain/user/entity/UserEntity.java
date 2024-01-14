@@ -1,5 +1,6 @@
 package com.example.ouruniverse.domain.user.entity;
 
+import com.example.ouruniverse.domain.school.entity.SchoolEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,9 @@ public class UserEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "grade")
+    private Integer grade;
+
     @ElementCollection
     @Column(name = "follows")
     private List<Long> follows = new ArrayList<>();
@@ -32,4 +36,7 @@ public class UserEntity {
     @ElementCollection
     @Column(name = "follwings")
     private List<Long> followings = new ArrayList<>();
+
+    @OneToOne(mappedBy = "userId")
+    private SchoolEntity schoolId;
 }
