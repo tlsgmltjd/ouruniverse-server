@@ -1,6 +1,7 @@
 package com.example.ouruniverse.domain.user.controller;
 
 import com.example.ouruniverse.domain.user.controller.dto.UserInfoResponse;
+import com.example.ouruniverse.domain.user.entity.UserEntity;
 import com.example.ouruniverse.domain.user.service.UserService;
 import com.example.ouruniverse.global.common.UserManager;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserInfoResponse> findUser() {
-        return ResponseEntity.ok(userService.userFind(userManager.getCurrentUser()));
+        UserEntity user = userManager.getCurrentUser();
+
+        return ResponseEntity.ok(userService.userFind(user));
     }
 }
