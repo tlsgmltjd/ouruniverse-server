@@ -3,6 +3,7 @@ package com.example.ouruniverse.global.security.filter;
 
 import com.example.ouruniverse.global.common.ConstantsUtil;
 import com.example.ouruniverse.global.common.CookieManager;
+import com.example.ouruniverse.global.exception.HappyException;
 import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,13 +29,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = cookieManager.getCookieValue(request, ConstantsUtil.accessToken);
+        try {
+            String token = cookieManager.getCookieValue(request, ConstantsUtil.accessToken);
 
-        if (token != null) {
-            UsernamePasswordAuthenticationToken auth = jwtProvider.authentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            if (token != null) {
+                UsernamePasswordAuthenticationToken auth = jwtProvider.authentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (HappyException e) {
+            response.sendError(e.getErrorCode().getStatus().value(), e.getMessage());
         }
-
-        filterChain.doFilter(request, response);
     }
 }

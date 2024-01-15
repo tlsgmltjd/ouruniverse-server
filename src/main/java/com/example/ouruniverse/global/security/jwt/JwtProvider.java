@@ -1,5 +1,7 @@
 package com.example.ouruniverse.global.security.jwt;
 
+import com.example.ouruniverse.global.exception.ErrorCode;
+import com.example.ouruniverse.global.exception.HappyException;
 import com.example.ouruniverse.global.security.auth.AuthDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -17,6 +19,9 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+
+import static com.example.ouruniverse.global.exception.ErrorCode.EXPIRED_TOKEN;
+import static com.example.ouruniverse.global.exception.ErrorCode.INVALID_TOKEN;
 
 @Slf4j
 @Component
@@ -62,7 +67,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public UsernamePasswordAuthenticationToken authentication(String token){
+    public UsernamePasswordAuthenticationToken authentication(String token) {
         UserDetails userDetails = authDetailsService.loadUserByUsername(getUserInfoFromToken(token).getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
@@ -70,7 +75,7 @@ public class JwtProvider {
     public Claims getUserInfoFromToken(String token) {
         try {
             if (token == null || token.isEmpty())
-                throw new JwtException("Invalid Token");
+                throw new HappyException(INVALID_TOKEN);
 
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -78,9 +83,9 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new JwtException("Token has expired");
+            throw new HappyException(EXPIRED_TOKEN);
         } catch (JwtException e) {
-            throw new JwtException("Invalid Token");
+            throw new HappyException(INVALID_TOKEN);
         }
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     public UserInfoResponse userFind(UserEntity user) {
+
         return UserInfoResponse.builder()
                 .userId(user.getId())
                 .userName(user.getName())

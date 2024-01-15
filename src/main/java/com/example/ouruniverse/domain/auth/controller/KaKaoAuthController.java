@@ -3,6 +3,9 @@ package com.example.ouruniverse.domain.auth.controller;
 import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
 import com.example.ouruniverse.domain.auth.controller.dto.KakaoLoginPageReponse;
 import com.example.ouruniverse.domain.auth.service.KaKaoAuthService;
+import com.example.ouruniverse.global.common.CookieManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +32,7 @@ public class KaKaoAuthController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<KakaoLoginPageReponse> KaKaoAuthLink() {
+    public ResponseEntity<KakaoLoginPageReponse> KaKaoAuthLink(HttpServletRequest request, HttpServletResponse response) {
         String redirectUrl = "https://kauth.kakao.com/oauth/authorize" +
                 "?response_type=code&" +
                 "client_id=" + restapiKey +
