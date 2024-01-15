@@ -88,4 +88,13 @@ public class JwtProvider {
             throw new HappyException(INVALID_TOKEN);
         }
     }
+
+    public boolean isExpiredToken(String token) {
+        final Date expiration = getUserInfoFromToken(token).getExpiration();
+        return expiration.before(new Date());
+    }
+
+    public boolean isValidToken(String token) {
+        return isExpiredToken(token);
+    }
 }

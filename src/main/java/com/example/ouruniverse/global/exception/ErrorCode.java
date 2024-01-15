@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
-    USER_NOTFOUND(HttpStatus.NOT_FOUND, "User Not Found" ),
+    REFRESH_NOTFOUND(HttpStatus.BAD_REQUEST, "RefreshToken Not Found"),
+    REFRESH_INVALID(HttpStatus.BAD_REQUEST, "RefreshToken Invalid"),
+
+    USER_NOTFOUND(HttpStatus.NOT_FOUND, "User Not Found"),
 
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired Token" ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"Invalid Token");

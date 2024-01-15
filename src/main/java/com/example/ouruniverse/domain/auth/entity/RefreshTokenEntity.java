@@ -19,4 +19,12 @@ public class RefreshTokenEntity {
 
     @Column(name = "refresh_token")
     private String refreshToken;
+
+    public RefreshTokenEntity updateRefreshToken(String refreshToken) {
+        return new RefreshTokenEntity(
+                this.id,
+                this.userId,
+                refreshToken
+        );
+    }
 }
