@@ -1,4 +1,10 @@
 package com.example.ouruniverse.global.exception;
 
-public class HappyException {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class HappyException extends RuntimeException {
+    private final ErrorCode errorCode;
 }
