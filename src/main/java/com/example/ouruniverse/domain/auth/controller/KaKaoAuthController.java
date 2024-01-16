@@ -2,6 +2,7 @@ package com.example.ouruniverse.domain.auth.controller;
 
 import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
 import com.example.ouruniverse.domain.auth.controller.dto.KakaoLoginPageReponse;
+import com.example.ouruniverse.domain.auth.controller.dto.SignupRequest;
 import com.example.ouruniverse.domain.auth.service.KaKaoAuthService;
 import com.example.ouruniverse.global.common.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class KaKaoAuthController {
     }
 
     @PatchMapping("/signup")
-    public ResponseEntity<Void> signup() {
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
         return ResponseEntity.ok().build();
     }
 }
