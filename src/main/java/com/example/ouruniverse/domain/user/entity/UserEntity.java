@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.EnumType.STRING;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -27,7 +29,8 @@ public class UserEntity {
     private String email;
 
     @Column(name = "grade")
-    private Integer grade;
+    @Enumerated(value = STRING)
+    private Grade grade;
 
     @ElementCollection
     @Column(name = "follows")
