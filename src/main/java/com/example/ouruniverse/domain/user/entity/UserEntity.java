@@ -42,4 +42,9 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "userId")
     private SchoolEntity schoolId;
+
+    public void signup(Grade grade, SchoolEntity schoolId) {
+        this.grade = grade;
+        this.schoolId = schoolId;
+    }
 }

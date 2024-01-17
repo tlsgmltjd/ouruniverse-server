@@ -1,12 +1,13 @@
 package com.example.ouruniverse.domain.auth.service;
 
-import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
-import com.example.ouruniverse.domain.auth.controller.dto.KaKaoInfo;
-import com.example.ouruniverse.domain.auth.controller.dto.KaKaoToken;
+import com.example.ouruniverse.domain.auth.controller.dto.*;
+import com.example.ouruniverse.domain.school.entity.SchoolEntity;
+import com.example.ouruniverse.domain.school.repository.SchoolRepository;
 import com.example.ouruniverse.domain.user.entity.UserEntity;
 import com.example.ouruniverse.domain.user.repository.UserRepository;
 import com.example.ouruniverse.global.common.ConstantsUtil;
 import com.example.ouruniverse.global.common.CookieManager;
+import com.example.ouruniverse.global.common.UserManager;
 import com.example.ouruniverse.global.feign.client.KaKaoClient;
 import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.List;
@@ -26,9 +28,11 @@ public class KaKaoAuthService {
 
     private final KaKaoClient client;
     private final CookieManager cookieManager;
+    private final UserManager userManager;
     private final HttpServletResponse httpServletResponse;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
+    private final SchoolRepository schoolRepository;
 
     @Value("${kakao.authUrl}")
     private String kakaoAuthUrl;
@@ -42,6 +46,7 @@ public class KaKaoAuthService {
     @Value("${kakao.redirectUrl}")
     private String redirectUrl;
 
+    @Transactional
     public boolean getInfo(final String code) {
         boolean isSignup;
 
@@ -81,6 +86,24 @@ public class KaKaoAuthService {
             log.error("something error..", e);
             throw new RuntimeException();
         }
+    }
+
+    @Transactional
+    public void signup(SignupRequest request) {
+        UserEntity user = userManager.getCurrentUser();
+
+        SchoolEntity school = SchoolEntity.builder()
+                .userId(user)
+                .schoolName(request.getSchool().getSchoolName())
+                .schoolPosition(request.getSchool().getSchoolPosition())
+                .EstablishmentName(request.getSchool().getEstablishmentName())
+                .administrativeStandardCode(request.getSchool().getAdministrativeStandardCode())
+                .build();
+
+        user.signup(request.getGrade(), school);
+
+        userRepository.save(user);
+        schoolRepository.save(school);
     }
 
     private KaKaoToken getToken(final String code) {
