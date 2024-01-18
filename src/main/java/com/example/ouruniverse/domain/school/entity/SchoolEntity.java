@@ -27,5 +27,5 @@ public class SchoolEntity {
 
     private String schoolPosition;
 
-    private String EstablishmentName;
+    private String establishmentName;
 }

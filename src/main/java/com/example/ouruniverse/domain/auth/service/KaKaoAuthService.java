@@ -8,6 +8,7 @@ import com.example.ouruniverse.domain.user.repository.UserRepository;
 import com.example.ouruniverse.global.common.ConstantsUtil;
 import com.example.ouruniverse.global.common.CookieManager;
 import com.example.ouruniverse.global.common.UserManager;
+import com.example.ouruniverse.global.exception.HappyException;
 import com.example.ouruniverse.global.feign.client.KaKaoClient;
 import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+
+import static com.example.ouruniverse.global.exception.ErrorCode.ALREADY_SIGNUP;
 
 @Slf4j
 @Service
@@ -92,11 +94,15 @@ public class KaKaoAuthService {
     public void signup(SignupRequest request) {
         UserEntity user = userManager.getCurrentUser();
 
+        if (user.getGrade() != null && user.getSchoolId() != null)
+            throw new HappyException(ALREADY_SIGNUP);
+
         SchoolEntity school = SchoolEntity.builder()
                 .userId(user)
                 .schoolName(request.getSchool().getSchoolName())
                 .schoolPosition(request.getSchool().getSchoolPosition())
-                .EstablishmentName(request.getSchool().getEstablishmentName())
+                .establishmentName(request.getSchool().getEstablishmentName())
+                .provincialOfficeOfEducationCode(request.getSchool().getProvincialOfficeOfEducationCode())
                 .administrativeStandardCode(request.getSchool().getAdministrativeStandardCode())
                 .build();
 

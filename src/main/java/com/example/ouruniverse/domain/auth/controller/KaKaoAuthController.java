@@ -44,6 +44,7 @@ public class KaKaoAuthController {
 
     @PatchMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
+        kaKaoAuthService.signup(request);
         return ResponseEntity.ok().build();
     }
 }

@@ -16,6 +16,5 @@ public class SignupRequest {
     @NotBlank
     private String nickName;
 
-    @NotNull
     private School school;
 }

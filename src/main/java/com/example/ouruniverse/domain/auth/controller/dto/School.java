@@ -26,5 +26,5 @@ public class School {
     private String schoolPosition;
 
     @NotBlank
-    private String EstablishmentName;
+    private String establishmentName;
 }

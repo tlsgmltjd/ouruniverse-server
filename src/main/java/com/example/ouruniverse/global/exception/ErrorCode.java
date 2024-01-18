@@ -11,6 +11,7 @@ public enum ErrorCode {
     REFRESH_INVALID(HttpStatus.BAD_REQUEST, "RefreshToken Invalid"),
 
     USER_NOTFOUND(HttpStatus.NOT_FOUND, "User Not Found"),
+    ALREADY_SIGNUP(HttpStatus.BAD_REQUEST, "Already Signed up User"),
 
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired Token" ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"Invalid Token");
