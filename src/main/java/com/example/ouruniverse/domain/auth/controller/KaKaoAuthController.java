@@ -1,10 +1,7 @@
 package com.example.ouruniverse.domain.auth.controller;
 
-import com.example.ouruniverse.domain.auth.controller.dto.IsSignupResponse;
 import com.example.ouruniverse.domain.auth.controller.dto.KakaoLoginPageReponse;
-import com.example.ouruniverse.domain.auth.controller.dto.SignupRequest;
 import com.example.ouruniverse.domain.auth.service.KaKaoAuthService;
-import com.example.ouruniverse.global.common.CookieManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +25,10 @@ public class KaKaoAuthController {
     private String redirectUri;
 
     @GetMapping("/callback")
-    public ResponseEntity<IsSignupResponse> getKakaoAccount(@RequestParam("code") String code) {
-      return ResponseEntity.ok(new IsSignupResponse(kaKaoAuthService.getInfo(code)));
+    public ResponseEntity<Void> getKakaoAccount(@RequestParam("code") String code) {
+      kaKaoAuthService.getInfo(code);
+
+      return ResponseEntity.ok().build();
     }
 
     @GetMapping("/login")
@@ -40,11 +39,5 @@ public class KaKaoAuthController {
                 "&redirect_uri=" + redirectUri;
 
         return ResponseEntity.ok(new KakaoLoginPageReponse(redirectUrl));
-    }
-
-    @PatchMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
-        kaKaoAuthService.signup(request);
-        return ResponseEntity.ok().build();
     }
 }

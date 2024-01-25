@@ -49,9 +49,7 @@ public class KaKaoAuthService {
     private String redirectUrl;
 
     @Transactional
-    public boolean getInfo(final String code) {
-        boolean isSignup;
-
+    public void getInfo(final String code) {
         final KaKaoToken token = getToken(code);
         try {
             KaKaoInfo kaKaoInfo = client.getInfo(new URI(kakaoUserApiUrl), token.getTokenType() + " " + token.getAccessToken());
@@ -68,13 +66,6 @@ public class KaKaoAuthService {
                         .build();
 
                 userRepository.save(user);
-
-                isSignup = false;
-            } else {
-                UserEntity user = userRepository.findByEmail(kaKaoInfo.getKakaoAccount().getEmail())
-                        .orElseThrow(RuntimeException::new);
-
-                isSignup = user.getGrade() != null && user.getSchoolId() != null;
             }
 
             refreshTokenService.saveRefreshToken(refreshToken, userRepository.findByEmail(kaKaoInfo.getKakaoAccount().getEmail())
@@ -83,33 +74,10 @@ public class KaKaoAuthService {
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.accessToken,  accessToken, JwtProvider.TOKEN_TIME, true);
             cookieManager.addTokenCookie(httpServletResponse, ConstantsUtil.refreshToken, refreshToken, JwtProvider.REFRESH_TOKEN_TIME, true);
 
-            return isSignup;
         } catch (Exception e) {
             log.error("something error..", e);
             throw new RuntimeException();
         }
-    }
-
-    @Transactional
-    public void signup(SignupRequest request) {
-        UserEntity user = userManager.getCurrentUser();
-
-        if (user.getGrade() != null && user.getSchoolId() != null)
-            throw new HappyException(ALREADY_SIGNUP);
-
-        SchoolEntity school = SchoolEntity.builder()
-                .userId(user)
-                .schoolName(request.getSchool().getSchoolName())
-                .schoolPosition(request.getSchool().getSchoolPosition())
-                .establishmentName(request.getSchool().getEstablishmentName())
-                .provincialOfficeOfEducationCode(request.getSchool().getProvincialOfficeOfEducationCode())
-                .administrativeStandardCode(request.getSchool().getAdministrativeStandardCode())
-                .build();
-
-        user.signup(request.getGrade(), school);
-
-        userRepository.save(user);
-        schoolRepository.save(school);
     }
 
     private KaKaoToken getToken(final String code) {
