@@ -45,7 +45,6 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers("/userinfo").authenticated()
                         .anyRequest().permitAll()
         );
 

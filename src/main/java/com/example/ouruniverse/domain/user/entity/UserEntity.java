@@ -1,6 +1,5 @@
 package com.example.ouruniverse.domain.user.entity;
 
-import com.example.ouruniverse.domain.school.entity.SchoolEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,12 +38,4 @@ public class UserEntity {
     @ElementCollection
     @Column(name = "follwings")
     private List<Long> followings = new ArrayList<>();
-
-    @OneToOne(mappedBy = "userId")
-    private SchoolEntity schoolId;
-
-    public void signup(Grade grade, SchoolEntity schoolId) {
-        this.grade = grade;
-        this.schoolId = schoolId;
-    }
 }

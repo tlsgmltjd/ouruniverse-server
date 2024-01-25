@@ -1,14 +1,11 @@
 package com.example.ouruniverse.domain.auth.service;
 
 import com.example.ouruniverse.domain.auth.controller.dto.*;
-import com.example.ouruniverse.domain.school.entity.SchoolEntity;
-import com.example.ouruniverse.domain.school.repository.SchoolRepository;
 import com.example.ouruniverse.domain.user.entity.UserEntity;
 import com.example.ouruniverse.domain.user.repository.UserRepository;
 import com.example.ouruniverse.global.common.ConstantsUtil;
 import com.example.ouruniverse.global.common.CookieManager;
 import com.example.ouruniverse.global.common.UserManager;
-import com.example.ouruniverse.global.exception.HappyException;
 import com.example.ouruniverse.global.feign.client.KaKaoClient;
 import com.example.ouruniverse.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.URI;
 import java.util.List;
 
-import static com.example.ouruniverse.global.exception.ErrorCode.ALREADY_SIGNUP;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,11 +25,9 @@ public class KaKaoAuthService {
 
     private final KaKaoClient client;
     private final CookieManager cookieManager;
-    private final UserManager userManager;
     private final HttpServletResponse httpServletResponse;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
-    private final SchoolRepository schoolRepository;
 
     @Value("${kakao.authUrl}")
     private String kakaoAuthUrl;
