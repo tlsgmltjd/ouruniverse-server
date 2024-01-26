@@ -24,9 +24,4 @@ public class PostController {
                 postService.upload(multipartFile, request)
         );
     }
-
-    @GetMapping("/post")
-    public ResponseEntity<Void> getPosts() {
-        return ResponseEntity.ok().build();
-    }
 }

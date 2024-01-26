@@ -21,13 +21,17 @@ import java.util.List;
 public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long id;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "content")
     private String content;
 
     @ElementCollection
+    @Column(name = "img_urls")
     private List<String> imgUrls = new ArrayList<>();
 
     @CreatedDate
