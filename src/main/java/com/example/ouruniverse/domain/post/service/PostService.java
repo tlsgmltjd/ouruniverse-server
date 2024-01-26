@@ -9,9 +9,12 @@ import com.example.ouruniverse.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class PostService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -68,5 +72,10 @@ public class PostService {
                 .content(savedEntity.getContent())
                 .imgUrls(savedEntity.getImgUrls())
                 .build();
+    }
+
+    public Page<PostEntity> postFind(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        return postRepository.findAll(pageRequest);
     }
 }
