@@ -2,8 +2,10 @@ package com.example.ouruniverse.domain.post.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.example.ouruniverse.domain.post.controller.dto.PostRequest;
-import com.example.ouruniverse.domain.post.controller.dto.PostResponse;
+import com.example.ouruniverse.domain.post.controller.dto.PostCreateRequest;
+import com.example.ouruniverse.domain.post.controller.dto.PostCreateResponse;
+import com.example.ouruniverse.domain.post.controller.dto.PostFindResponse;
+import com.example.ouruniverse.domain.post.controller.dto.PostResponseDto;
 import com.example.ouruniverse.domain.post.entity.PostEntity;
 import com.example.ouruniverse.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class PostService {
     private final AmazonS3 amazonS3;
 
     @Transactional
-    public PostResponse upload(List<MultipartFile> images, PostRequest request) throws IOException {
+    public PostCreateResponse upload(List<MultipartFile> images, PostCreateRequest request) throws IOException {
 
         if (images.size() > 3 || images.isEmpty()) throw new RuntimeException();
 
@@ -66,7 +68,7 @@ public class PostService {
 
         PostEntity savedEntity = postRepository.save(newPost);
 
-        return PostResponse.builder()
+        return PostCreateResponse.builder()
                 .id(savedEntity.getId())
                 .title(savedEntity.getTitle())
                 .content(savedEntity.getContent())
@@ -74,8 +76,22 @@ public class PostService {
                 .build();
     }
 
-    public Page<PostEntity> postFind(int page, int size) {
+    public PostFindResponse postFind(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        return postRepository.findAll(pageRequest);
+        Page<PostEntity> postEntityPage = postRepository.findAll(pageRequest);
+
+        return PostFindResponse.builder()
+                .last(postEntityPage.isLast())
+                .response(
+                        postEntityPage.getContent().stream()
+                                .map(post -> PostResponseDto.builder()
+                                        .id(post.getId())
+                                        .title(post.getTitle())
+                                        .content(post.getContent())
+                                        .imgUrls(post.getImgUrls())
+                                        .createdDate(post.getCreatedDate())
+                                        .build())
+                                .toList()
+                ).build();
     }
 }

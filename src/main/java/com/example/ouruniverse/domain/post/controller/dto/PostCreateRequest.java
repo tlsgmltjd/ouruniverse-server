@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostRequest {
+public class PostCreateRequest {
     @NotBlank
     private String title;
     @NotBlank
