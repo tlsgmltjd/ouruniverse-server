@@ -1,25 +1,21 @@
 package com.example.ouruniverse.domain.post.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.example.ouruniverse.domain.post.controller.dto.ImgUrlResponse;
+import com.example.ouruniverse.domain.post.controller.dto.PostRequest;
+import com.example.ouruniverse.domain.post.controller.dto.PostResponse;
+import com.example.ouruniverse.domain.post.entity.PostEntity;
+import com.example.ouruniverse.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -29,13 +25,15 @@ public class PostService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    private final PostRepository postRepository;
     private final AmazonS3 amazonS3;
 
-    public List<ImgUrlResponse> upload(List<MultipartFile> images) throws IOException {
+    @Transactional
+    public PostResponse upload(List<MultipartFile> images, PostRequest request) throws IOException {
 
         if (images.size() > 3 || images.isEmpty()) throw new RuntimeException();
 
-        List<ImgUrlResponse> responses = new ArrayList<>();
+        List<String> imgUrls = new ArrayList<>();
 
         for (MultipartFile image : images) {
             if (image != null &&
@@ -53,9 +51,22 @@ public class PostService {
 
             amazonS3.putObject(bucket, s3FileName, image.getInputStream(), objMeta);
 
-            responses.add(new ImgUrlResponse(amazonS3.getUrl(bucket, s3FileName).toString()));
+            imgUrls.add(amazonS3.getUrl(bucket, s3FileName).toString());
         }
 
-        return responses;
+        PostEntity newPost = PostEntity.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .imgUrls(imgUrls)
+                .build();
+
+        PostEntity savedEntity = postRepository.save(newPost);
+
+        return PostResponse.builder()
+                .id(savedEntity.getId())
+                .title(savedEntity.getTitle())
+                .content(savedEntity.getContent())
+                .imgUrls(savedEntity.getImgUrls())
+                .build();
     }
 }
