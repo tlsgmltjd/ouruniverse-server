@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.EnumType.STRING;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -26,16 +24,4 @@ public class UserEntity {
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "grade")
-    @Enumerated(value = STRING)
-    private Grade grade;
-
-    @ElementCollection
-    @Column(name = "follows")
-    private List<Long> follows = new ArrayList<>();
-
-    @ElementCollection
-    @Column(name = "follwings")
-    private List<Long> followings = new ArrayList<>();
 }

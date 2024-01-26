@@ -54,8 +54,6 @@ public class KaKaoAuthService {
                 UserEntity user = UserEntity.builder()
                         .name(kaKaoInfo.getKakaoAccount().getProfile().getNickname())
                         .email(kaKaoInfo.getKakaoAccount().getEmail())
-                        .follows(List.of())
-                        .followings(List.of())
                         .build();
 
                 userRepository.save(user);
