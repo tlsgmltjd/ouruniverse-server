@@ -1,5 +1,6 @@
 package com.example.ouruniverse.domain.post.controller;
 
+import com.example.ouruniverse.domain.post.controller.dto.ImgUrlResponse;
 import com.example.ouruniverse.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,16 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class PostController {
-    private final PostService service;
+    private final PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<String> uploadFile(@RequestParam("images") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<List<ImgUrlResponse>> uploadFile(@RequestParam("images") List<MultipartFile> multipartFile) throws IOException {
         return ResponseEntity.ok(
-                service.upload(multipartFile)
+                postService.upload(multipartFile)
         );
     }
 
