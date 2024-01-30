@@ -15,6 +15,7 @@ public class UserService {
                 .userId(user.getId())
                 .userName(user.getName())
                 .userEmail(user.getEmail())
+                .profileUrl(user.getProfileUrl())
                 .build();
     }
 }

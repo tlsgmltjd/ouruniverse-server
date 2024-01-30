@@ -24,4 +24,7 @@ public class UserEntity {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "profile_url")
+    private String profileUrl;
 }
