@@ -13,6 +13,8 @@ public enum ErrorCode {
     USER_NOTFOUND(HttpStatus.NOT_FOUND, "User Not Found"),
     ALREADY_SIGNUP(HttpStatus.BAD_REQUEST, "Already Signed up User"),
 
+    IMG_EXCEPTION(HttpStatus.BAD_REQUEST, "Img Exception" ),
+
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired Token" ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED,"Invalid Token");
 

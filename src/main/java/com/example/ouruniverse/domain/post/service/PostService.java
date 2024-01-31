@@ -8,6 +8,8 @@ import com.example.ouruniverse.domain.post.controller.dto.PostFindResponse;
 import com.example.ouruniverse.domain.post.controller.dto.PostResponseDto;
 import com.example.ouruniverse.domain.post.entity.PostEntity;
 import com.example.ouruniverse.domain.post.repository.PostRepository;
+import com.example.ouruniverse.global.exception.ErrorCode;
+import com.example.ouruniverse.global.exception.HappyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.ouruniverse.global.exception.ErrorCode.IMG_EXCEPTION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,7 +50,7 @@ public class PostService {
                     !image.getOriginalFilename().toLowerCase().endsWith(".png") &&
                     !image.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
                     !image.getOriginalFilename().toLowerCase().endsWith(".jpeg")) {
-                throw new RuntimeException();
+                throw new HappyException(IMG_EXCEPTION);
             }
 
             String s3FileName = UUID.randomUUID() + "-" + image.getOriginalFilename();
