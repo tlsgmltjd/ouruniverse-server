@@ -41,7 +41,7 @@ public class PostService {
     @Transactional
     public PostCreateResponse upload(List<MultipartFile> images, PostCreateRequest request) throws IOException {
 
-        if (images.size() > 3 || images.isEmpty()) throw new RuntimeException();
+        if (images.size() > 3 || images.isEmpty()) throw new HappyException(IMG_EXCEPTION);
 
         List<String> imgUrls = new ArrayList<>();
 
