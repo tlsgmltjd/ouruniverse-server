@@ -19,6 +19,7 @@ import static com.example.ouruniverse.global.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;

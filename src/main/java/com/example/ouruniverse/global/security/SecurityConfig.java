@@ -1,6 +1,5 @@
 package com.example.ouruniverse.global.security;
 
-
 import com.example.ouruniverse.global.security.filter.JwtRequestFilter;
 import com.example.ouruniverse.global.security.handler.CustomAccessDeniedHandler;
 import com.example.ouruniverse.global.security.handler.CustomAuthenticationEntryPointHandler;
@@ -61,7 +60,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -73,6 +71,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }
